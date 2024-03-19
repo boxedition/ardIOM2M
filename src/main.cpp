@@ -4,7 +4,7 @@
 #include "arduino_secrets.h"
 
 const char* serverAddress = "m2m.boxdev.site";
-const int port = 433;
+const int port = 80;
 const char* resource = "/cse-in";
 const char* ae = "AirTemp"; // AE Name
 
@@ -12,6 +12,7 @@ const char* ae = "AirTemp"; // AE Name
 
 WiFiClient wifi;
 HttpClient client = HttpClient(wifi, serverAddress, port);
+
 //PROTO
 void connectToWiFi();
 float readSensor();
@@ -69,7 +70,7 @@ void createAE() {
 
 void makeHTTPRequest(String payload, String type) {
   String content = "application/json;ty=" + String(type); 
-  String origin = String(ae); 
+  String origin = "CAdmin"+String(ae); 
   Serial.print("\nPayload: "+ String(payload));
   Serial.print("\nContent-Type: "+ String(content));
   Serial.print("\nX-M2M-Origin: "+ String(origin));
