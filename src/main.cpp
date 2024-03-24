@@ -21,7 +21,7 @@ void makeHTTPRequest(String payload, String type);
 
 void setup() {
   Serial.begin(115200);
-  delay(100);
+  delay(1024);
 
   connectToWiFi();
 }
