@@ -17,7 +17,7 @@ void connectToWiFi();
 float readSensor();
 void createAE();
 void createContainer(String name);
-void makeHTTPRequest(String payload, String type);
+void makeHTTPRequest(String payload, String resource, String type, String origin);
 
 void setup()
 {
@@ -33,7 +33,7 @@ void setup()
   // Loop to create multiple containers
   for (int i = 0; i < nContainers; i++)
   {
-    Serial.println("Processing Container: " + String(i++) + "/" + nContainers);
+    // Serial.println("Processing Container: " + containers[i]);
     createContainer(containers[i]);
   }
 }
@@ -85,26 +85,29 @@ void createAE()
 {
   Serial.println("Creating Application Entity (AE)");
   String apiName = 'N' + String(ae);
+  String origin = "CAdmin" + String(ae);
   String aePayload = "{\"m2m:ae\": {\"rn\": \"" + String(ae) + "\", \"api\": \"" + apiName + "\", \"rr\": true, \"srv\": [\"3\"]}}";
-  makeHTTPRequest(aePayload, "2");
+  makeHTTPRequest(aePayload, resource, "2", origin);
 }
 
 void createContainer(String name)
 {
   String cntPayload = "{\"m2m:cnt\": {\"rn\": \"" + name + "\"}}";
-  makeHTTPRequest(cntPayload, "3");
+  String origin = "CAdmin";
+  String path = String(resource) + "/" + String(ae);
+  Serial.println(path);
+  makeHTTPRequest(cntPayload, path, "3", origin);
 }
 
-void makeHTTPRequest(String payload, String type)
+void makeHTTPRequest(String payload, String path, String type, String origin)
 {
   String content = "application/json;ty=" + String(type);
-  String origin = "CAdmin" + String(ae);
   Serial.print("\nPayload: " + String(payload));
   Serial.print("\nContent-Type: " + String(content));
   Serial.print("\nX-M2M-Origin: " + String(origin));
 
   client.beginRequest();
-  client.post(resource);
+  client.post(path);
   client.sendHeader("Accept", "application/json");
   client.sendHeader("Content-Type", content);
   client.sendHeader("X-M2M-Origin", origin);
