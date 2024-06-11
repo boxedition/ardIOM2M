@@ -18,6 +18,7 @@ float readSensor();
 void createAE();
 void createContainer(String name);
 void makeHTTPRequest(String payload, String resource, String type, String origin);
+void updateCIN(String container, String value);
 
 void setup()
 {
@@ -40,13 +41,15 @@ void setup()
 
 void loop()
 {
-  float sensorData = readSensor();
 
-  String payload = "{\"sensor_data\": " + String(sensorData) + "}";
+  // Loop to create multiple containers
+  for (int i = 0; i < nContainers; i++)
+  {
+    float sensorData = readSensor();
+    updateCIN(containers[i], String(sensorData));
+  }
 
-  // createAE();
-
-  delay(5000);
+  delay(2500);
 }
 
 void connectToWiFi()
@@ -97,6 +100,14 @@ void createContainer(String name)
   String path = String(resource) + "/" + String(ae);
   Serial.println(path);
   makeHTTPRequest(cntPayload, path, "3", origin);
+}
+
+void updateCIN(String container, String value)
+{
+  String cntPayload = "{\"m2m:cin\": {\"con\": \"" + value + "\",\"cnf\": \"text/plain:0\",\"lbl\": [\"" + container + "\",\"" + String(ae) + "\"]}}";
+  String origin = "CAdmin";
+  String path = String(resource) + "/" + String(ae) + "/" + String(container);
+  makeHTTPRequest(cntPayload, path, "4", origin);
 }
 
 void makeHTTPRequest(String payload, String path, String type, String origin)
