@@ -1,0 +1,13 @@
+### Setup PlatformIO on you VSCode
+
+´´´
+https://platformio.org/install/ide?install=vscode
+´´´
+
+### Clone Arduino Secret Example
+
+´´´
+cp /include/arduino_secrets.h.example /include/arduino_secrets.h
+´´´
+
+## Upload and Run
